@@ -123,3 +123,22 @@ func UserSignIn(username, password string) (*user_model.User, *auth.Source, erro
 
 	return nil, nil, user_model.ErrUserNotExist{Name: username}
 }
+
+func SacSignIn(code string) (bool, *user_model.User) {
+	// code换用户名
+	username := SacAuth(code)
+	if username == "" {
+		return false, nil
+	}
+	log.Info("User %s try to login by code", username)
+
+	// 用户名找信息
+	user := &user_model.User{LowerName: username}
+	hasUser, err := user_model.GetUser(user)
+	if err != nil || !hasUser {
+		log.Info("User %s not exists", username)
+		return false, nil
+	}
+
+	return true, user
+}

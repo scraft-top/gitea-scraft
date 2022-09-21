@@ -154,6 +154,10 @@ func (f *MustChangePasswordForm) Validate(req *http.Request, errs binding.Errors
 	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
 }
 
+type SignInSacForm struct {
+	Code string `binding:"Required;MaxSize(32)"`
+}
+
 // SignInForm form for signing in with user/password
 type SignInForm struct {
 	UserName string `binding:"Required;MaxSize(254)"`

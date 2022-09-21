@@ -171,6 +171,28 @@ func SignIn(ctx *context.Context) {
 	ctx.HTML(http.StatusOK, tplSignIn)
 }
 
+func SignInSac(ctx *context.Context) {
+	form := web.GetForm(ctx).(*forms.SignInSacForm)
+	if form.Code != "" {
+		// try login
+		ok, u := auth_service.SacSignIn(form.Code)
+		if ok {
+			// login ok
+			handleSignIn(ctx, u, false)
+			ctx.Redirect(setting.AppURL, http.StatusFound)
+		} else {
+			// login fail
+			ctx.PlainText(http.StatusBadRequest, "无效参数")
+		}
+	} else {
+		// redirect to login
+		loginCallbackUrl := setting.AppURL+"user/sac_login"
+		loginRedirectUrl := fmt.Sprintf("%s/oauth/authorize?response_type=code&client_id=%s&redirect_uri=%s", 
+										setting.SacPublicUrl, setting.SacClientID, loginCallbackUrl)
+		ctx.Redirect(loginRedirectUrl, http.StatusFound)
+	}
+}
+
 // SignInPost response for sign in request
 func SignInPost(ctx *context.Context) {
 	ctx.Data["Title"] = ctx.Tr("sign_in")

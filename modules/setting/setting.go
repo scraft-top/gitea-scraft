@@ -440,6 +440,12 @@ var (
 	ShowFooterVersion          bool
 	ShowFooterTemplateLoadTime bool
 
+	// SAC
+	SacPublicUrl    string
+	SacPrivateUrl   string
+	SacClientID     string
+	SacClientSecret string
+
 	// Global setting objects
 	Cfg           *ini.File
 	CustomPath    string // Custom directory path
@@ -645,6 +651,11 @@ func loadFromConf(allowEmpty bool, extraConfig string) {
 	StacktraceLogLevel = getStacktraceLogLevel(Cfg.Section("log"), "STACKTRACE_LEVEL", "None")
 	LogRootPath = Cfg.Section("log").Key("ROOT_PATH").MustString(path.Join(AppWorkPath, "log"))
 	forcePathSeparator(LogRootPath)
+
+	SacPublicUrl = Cfg.Section("").Key("SAC_PUBLIC_URL").MustString("")
+	SacPrivateUrl = Cfg.Section("").Key("SAC_PRIVATE_URL").MustString("")
+	SacClientID = Cfg.Section("").Key("SAC_CLIENT_ID").MustString("")
+	SacClientSecret = Cfg.Section("").Key("SAC_CLIENT_SECRET").MustString("")
 
 	sec := Cfg.Section("server")
 	AppName = Cfg.Section("").Key("APP_NAME").MustString("Gitea: Git with a cup of tea")
